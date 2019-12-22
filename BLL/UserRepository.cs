@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mactor.DAL;
+using Mactor.DAL.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,6 +65,11 @@ namespace Mactor.BLL
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
+        }
+
+        Task<User> IUserRepository.GetUserAsync(string email)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

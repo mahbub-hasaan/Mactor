@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Mactor.DAL.Entites;
 namespace Mactor.BLL
 {
-    public interface IUserRepository
+    public interface IAccountRepository
     {
-        Task<User> GetUserAsync(string email);
-        Task<bool> BlockUserAsync(Guid id);
+        public Task<IdentityResult> CreatAccount(User user,string password);
+        public Task<bool> SaveAsync();
     }
 }

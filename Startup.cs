@@ -13,7 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using AutoMapper;
+using Mactor.Mapping;
+using Mactor.BLL;
+using Mactor.DAL.Entites;
 namespace Mactor
 {
     public class Startup
@@ -31,8 +34,10 @@ namespace Mactor
             services.AddDbContextPool<MactorContext>(
                 options => options.UseSqlServer( Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MactorContext>();
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<IAccountRepository, AccountRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

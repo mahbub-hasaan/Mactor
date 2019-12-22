@@ -5,20 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Mactor.Models;
+using AutoMapper;
+using Mactor.BLL;
+using Mactor.DAL.Entites;
 namespace Mactor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly IMapper _mapper;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public AccountController(IMapper mapper,IAccountRepository accountRepository)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            _mapper = mapper;
+            this._accountRepository = accountRepository;
         }
         // GET: api/User
         [HttpGet]
@@ -36,8 +39,20 @@ namespace Mactor.Controllers
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreatAccountAsync([FromBody] UserCreatDto user)
         {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            User u = _mapper.Map<User>(user);
+            var result = await _accountRepository.CreatAccount(u, u.PasswordHash);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Account Creation faild");
+                //return StatusCode(500, "Account Creation faild");
+            }
+            return Ok();
         }
 
         // PUT: api/User/5
