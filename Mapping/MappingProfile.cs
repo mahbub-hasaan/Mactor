@@ -13,9 +13,9 @@ namespace Mactor.Mapping
         {
             CreateMap<User,UserDto>()
                 .ForMember(des=>des.FullName,opt=>opt.MapFrom(src=>src.FistName+" "+src.LastName))
-                .ForMember(des => des.Password, opt => opt.MapFrom(src => src.PasswordHash))
                 .ForMember(des => des.UserName, opt => opt.MapFrom(src =>src.UserName))
-                .ForMember(des => des.Email, opt => opt.MapFrom(src => src.Email));
+                .ForMember(des => des.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(des => des.FirstName, opt => opt.MapFrom(src => src.FistName)); ;
 
             CreateMap<UserCreatDto,User>()
                 .ForMember(des => des.PasswordHash, opt => opt.MapFrom(src => src.Password))

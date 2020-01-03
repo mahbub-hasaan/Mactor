@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mactor.Models;
 using AutoMapper;
@@ -11,7 +10,7 @@ using Mactor.BLL;
 using Mactor.DAL.Entites;
 namespace Mactor.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -23,18 +22,13 @@ namespace Mactor.Controllers
             _mapper = mapper;
             this._accountRepository = accountRepository;
         }
-        // GET: api/User
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/User/5
+        // GET: api/account
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string Id)
         {
-            return "value";
+            var account =await _accountRepository.GetAccountAsync(Id);
+            UserDto user = _mapper.Map<UserDto>(account);
+            return new JsonResult(user);
         }
 
         // POST: api/User
@@ -45,6 +39,17 @@ namespace Mactor.Controllers
             {
                 return BadRequest();
             }
+
+            if(await _accountRepository.isEmailExist(user.Email))
+            {
+                throw new Exception("Email already exist");
+            }
+
+            if(await _accountRepository.isUserNameExist(user.UserName))
+            {
+                throw new Exception("User Name already exist");
+            }
+
             User u = _mapper.Map<User>(user);
             var result = await _accountRepository.CreatAccount(u, u.PasswordHash);
             if (!result.Succeeded)
